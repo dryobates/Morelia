@@ -33,7 +33,7 @@ class AST(object):
         self._test_visitor_class = test_visitor_class
         self._matcher_visitor_class = matcher_visitor_class
 
-    def evaluate(self, suite, formatter=None, matchers=None, show_all_missing=True):
+    def evaluate(self, suite, formatter=None, matchers=None, show_all_missing=True, reporter=None):
         if matchers is None:
             matchers = [RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher]
         matcher = self._create_matchers_chain(suite, matchers)
