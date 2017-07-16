@@ -34,13 +34,14 @@ def noop():
 class TestVisitor(IVisitor):
     """Visits all steps and run step methods."""
 
-    def __init__(self, suite, matcher, formatter):
+    def __init__(self, suite, matcher, formatter, reporter=None):
         self._setUp = suite.setUp
         self._tearDown = suite.tearDown
         self._suite = suite
         self._suite.setUp = self._suite.tearDown = noop
         self._matcher = matcher
         self._formatter = formatter
+        self.__reporer = reporter
         self._exceptions = []
         self._scenarios_failed = 0
         self._scenarios_passed = 0

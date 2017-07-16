@@ -8,18 +8,18 @@ from mock import sentinel, Mock, patch
 from morelia import run
 from morelia.decorators import tags
 from morelia.parser import Parser
-from morelia.grammar import Morelia, Step
+from morelia.grammar import Node, Step
 from morelia.exceptions import MissingStepError
 
 
 @tags(['unit'])
 class MoreliaReconstructionTestCase(TestCase):
-    """ Test :py:meth:`Morelia.reconstruction`. """
+    """ Test :py:meth:`Node.reconstruction`. """
 
     def test_should_reconstruct_unicode(self):
         """ Scenario: unicode input """
         # Arrange
-        obj = Morelia('???', u'zażółć gęślą jaźń')
+        obj = Node('???', u'zażółć gęślą jaźń')
         # Act
         result = obj.reconstruction()
         # Assert
@@ -28,7 +28,7 @@ class MoreliaReconstructionTestCase(TestCase):
     def test_should_reconstruct_utf8(self):
         """ Scenario: utf8 input """
         # Arrange
-        obj = Morelia('???', 'zażółć gęślą jaźń')
+        obj = Node('???', 'zażółć gęślą jaźń')
         # Act
         result = obj.reconstruction()
         # Assert

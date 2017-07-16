@@ -15,7 +15,7 @@ import textwrap
 from morelia.formatters import NullFormatter
 from morelia.grammar import (
     Feature, Background, Scenario, Given, When, Then, And, But, Row, Comment,
-    Examples, Step
+    Examples, Step, SourceLocation,
 )
 from morelia.matchers import (
     RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher
@@ -44,7 +44,7 @@ class AST(object):
             matcher_visitor.report_missing()
         if formatter is None:
             formatter = NullFormatter()
-        test_visitor = self._test_visitor_class(suite, matcher, formatter)
+        test_visitor = self._test_visitor_class(suite, matcher, formatter, reporter)
         try:
             feature.accept(test_visitor)
         except SyntaxError as exc:
@@ -87,19 +87,18 @@ class Parser(object):
     def parse_file(self, filename):
         with open(filename, 'rb') as input_file:
             prose = input_file.read().decode('utf-8')
-            ast = self.parse_features(prose)
-            self.steps[0].filename = filename
-            return ast
+        ast = self.parse_features(prose, filename)
+        return ast
 
-    def parse_features(self, prose):
-        self.parse_feature(prose)
+    def parse_features(self, prose, uri='<string>'):
+        self.parse_feature(prose, uri)
         ast = AST(self.steps)
         feature = self.steps[0]
         assert isinstance(feature, Feature), 'Exactly one Feature perf file'
         feature.enforce(any(isinstance(step, Scenario) for step in feature.steps), 'Feature without Scenario(s)')
         return ast
 
-    def _parse_line(self, line):
+    def _parse_line(self, line, uri):
         if self._language_parser.parse(line):
             self._prepare_patterns(self._language_parser.language)
             return
@@ -115,19 +114,18 @@ class Parser(object):
         if self._anneal_last_broken_line(line):
             return
 
-        if self._parse_thang(line):
+        if self._parse_thang(line, uri):
             return
 
         if 0 < len(self.steps):
             self._append_to_previous_node(line)
         else:
-            s = Step('???', line)
-            s.line_number = self._line_producer.line_number
+            s = Step('???', line, source=SourceLocation(uri, self._line_producer.line_number))
             feature_name = TRANSLATIONS[self._language_parser.language].get('feature', u'Feature')
             feature_name = feature_name.replace('|', ' or ')
             s.enforce(False, u'feature files must start with a %s' % feature_name)
 
-    def parse_feature(self, lines):
+    def parse_feature(self, lines, uri='<string>'):
         lines = to_unicode(lines)
 
         self._line_producer = LineSource(lines)
@@ -138,7 +136,7 @@ class Parser(object):
             while True:
                 line = self._line_producer.get_line()
                 if line:
-                    self._parse_line(line)
+                    self._parse_line(line, uri)
         except StopIteration:
             pass
         return self.steps
@@ -155,16 +153,18 @@ class Parser(object):
 
         return False
 
-    def _parse_thang(self, line):
+    def _parse_thang(self, line, uri):
         line = line.rstrip()
 
         for regexp, klass in self._patterns:
             m = regexp.match(line)
 
             if m and len(m.groups()) > 0:
-                node = klass(**m.groupdict())
-                node.add_labels(self._labels_parser.pop_labels())
-                node.connect_to_parent(self.steps, self._line_producer.line_number)
+                line_number = self._line_producer.line_number
+                source = SourceLocation(uri, line_number)
+                labels = self._labels_parser.pop_labels()
+                node = klass(source=source, labels=labels, **m.groupdict())
+                node.connect_to_parent(self.steps)
                 self.last_node = node
                 return node
 

@@ -476,24 +476,22 @@ class MoreliaSuite(TestCase):
         filename = pwd + '/features/morelia%s.feature' % (language or '')
         thang = Parser(language=language).parse_file(filename)
         feature = thang.steps[0]
-        assert feature.__class__ == Feature
-        assert feature.filename == filename
+        self.assertEqual(filename, feature.uri)
         step = feature.steps[3].steps[1]
-        assert filename == step.get_filename()
+        self.assertEqual(filename, step.uri)
 
     def test_format_faults_like_python_errors(self):
         language = self._get_language()
         filename = pwd + '/features/morelia%s.feature' % (language or '')
         thang = Parser(language=language).parse_file(filename)
         step = thang.steps[0].steps[3].steps[1]
-        assert filename == step.get_filename()
         omen = 'The Alpine glaciers move'
         diagnostic = step.format_fault(omen)
         parent_reconstruction = step.parent.reconstruction().strip('\n')
         reconstruction = step.reconstruction()
 
         expect = '\n  File "%s", line %s, in %s\n %s\n%s' % \
-            (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
+            (step.uri, step.line_number, parent_reconstruction, reconstruction, omen)
 
         assert expect == diagnostic
 

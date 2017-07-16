@@ -1,4 +1,4 @@
-from abc import ABCMeta
+from collections import namedtuple
 import copy
 import itertools
 import re
@@ -11,8 +11,6 @@ from morelia.utils import to_unicode
 
 
 class INode(object):
-
-    __metaclass__ = ABCMeta
 
     def find_step(self, matcher):
         """Find method matching step.
@@ -37,14 +35,24 @@ class INode(object):
             visitor.after_visit(self)
 
 
-class LabeledNode(object):
+SourceLocation = namedtuple('SourceLocation', ['uri', 'line'])
+Tag = namedtuple('Tag', ['name', 'line'])
+DEFAULT_SOURCE_LOCATION = SourceLocation('<string>', 1)
 
-    def __init__(self, *args, **kwargs):
-        super(LabeledNode, self).__init__(*args, **kwargs)
-        self._labels = []
 
-    def add_labels(self, tags):
-        self._labels.extend(tags)
+class Node(INode):
+
+    def __init__(self, keyword, predicate, source=DEFAULT_SOURCE_LOCATION, steps=None, labels=None, tags=None):
+        super(Node, self).__init__()
+        self.parent = None
+        self.additional_data = {}
+        self.keyword = keyword
+        self.predicate = predicate if predicate is not None else ''
+        self.steps = steps if steps else []
+        self.uri = source.uri
+        self.line_number = source.line
+        self._labels = labels if labels else []
+        self._tags = tags if tags else []
 
     def get_labels(self):
         labels = self._labels
@@ -52,20 +60,8 @@ class LabeledNode(object):
             labels.extend(self.parent.get_labels())
         return labels
 
-
-class Morelia(LabeledNode, INode):
-
-    def __init__(self, keyword, predicate, steps=[]):
-        super(Morelia, self).__init__()
-        self.parent = None
-        self.additional_data = {}
-        self.keyword = keyword
-        self.predicate = predicate if predicate is not None else ''
-        self.steps = steps
-
-    def connect_to_parent(self, steps=[], line_number=0):
+    def connect_to_parent(self, steps=[]):
         self.steps = []
-        self.line_number = line_number
 
         mpt = self.my_parent_type()
         try:
@@ -112,14 +108,14 @@ class Morelia(LabeledNode, INode):
                 offset = 5
             text += self.reconstruction()
             text = text.replace('\n\n', '\n').replace('\n', '\n\t')
-            raise SyntaxError(diagnostic, (self.get_filename(), self.line_number, offset, text))
+            raise SyntaxError(diagnostic, (self.uri, self.line_number, offset, text))
 
     def format_fault(self, diagnostic):
         parent_reconstruction = ''
         if self.parent:
             parent_reconstruction = self.parent.reconstruction().strip('\n')
         reconstruction = self.reconstruction()
-        args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
+        args = (self.uri, self.line_number, parent_reconstruction, reconstruction, diagnostic)
         args = tuple([to_unicode(i) for i in args])
         return u'\n  File "%s", line %s, in %s\n %s\n%s' % args
 
@@ -132,21 +128,8 @@ class Morelia(LabeledNode, INode):
     def get_real_reconstruction(self):
         return self.reconstruction() + '\n'
 
-    def get_filename(self):
-        node = self
 
-        while node:
-            if not node.parent:
-                try:
-                    return node.filename
-                except AttributeError:
-                    pass
-            node = node.parent
-
-        return None
-
-
-class Feature(Morelia):
+class Feature(Node):
 
     def prepend_steps(self, scenario):
         background = self.steps[0]
@@ -162,8 +145,31 @@ class Feature(Morelia):
         recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
+    def get_info(self):
+        return {
+            "uri": self.uri,
+            "keyword": self.keyword,
+            "id": self.__get_slug(),
+            "name": self.__get_name(),
+            "line": self.line_number,
+            "description": self.__get_description(),
+            "tags": self.__get_tags(),
+        }
 
-class Scenario(Morelia):
+    def __get_slug(self):
+        return self.__get_name().lower().replace(' ', '-')
+
+    def __get_name(self):
+        return self.predicate.splitlines()[0]
+
+    def __get_description(self):
+        return ''.join(self.predicate.splitlines()[1:])
+
+    def __get_tags(self):
+        return self.get_labels()
+
+
+class Scenario(Node):
 
     def my_parent_type(self):
         return Feature
@@ -188,7 +194,7 @@ class Scenario(Morelia):
         return '\n' + self.keyword + ': ' + self.predicate
 
 
-class Background(Morelia):
+class Background(Node):
 
     def my_parent_type(self):
         return Feature
@@ -213,7 +219,7 @@ class Background(Morelia):
             return background_steps
 
 
-class Step(Morelia):
+class Step(Node):
 
     def __init__(self, *args, **kwargs):
         super(Step, self).__init__(*args, **kwargs)
@@ -313,7 +319,7 @@ class But(And):
     pass
 
 
-class Row(Morelia):
+class Row(Node):
 
     @classmethod
     def get_pattern(cls, language):
@@ -342,7 +348,7 @@ class Row(Morelia):
         return row
 
 
-class Examples(Morelia):
+class Examples(Node):
 
     def prefix(self):
         return ' ' * 4
@@ -351,10 +357,10 @@ class Examples(Morelia):
         return Scenario
 
 
-class Comment(Morelia):
+class Comment(Node):
 
     def my_parent_type(self):
-        return Morelia  # aka "any"
+        return Node  # aka "any"
 
     @classmethod
     def get_pattern(cls, language):

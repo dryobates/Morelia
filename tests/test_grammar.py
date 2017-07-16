@@ -4,7 +4,7 @@ from mock import sentinel, Mock, ANY
 
 from morelia.decorators import tags
 from morelia.formatters import IFormatter
-from morelia.grammar import Feature, Morelia, Step
+from morelia.grammar import Feature, Node, Step, SourceLocation, Tag
 from morelia.matchers import IStepMatcher
 from morelia.parser import AST
 from morelia.visitors import IVisitor
@@ -25,7 +25,7 @@ class ASTEvaluateTestCase(TestCase):
         # Act
         obj.evaluate(sentinel.suite, matchers=[matcher_class])
         # Assert
-        test_visitor_class.assert_called_once_with(sentinel.suite, matcher_class.return_value, ANY)
+        test_visitor_class.assert_called_once_with(sentinel.suite, matcher_class.return_value, ANY, ANY)
 
     def test_should_use_provided_formatter(self):
         """ Scenariusz: formatter given as parameter """
@@ -38,7 +38,7 @@ class ASTEvaluateTestCase(TestCase):
         # Act
         obj.evaluate(sentinel.suite, formatter=formatter)
         # Assert
-        test_visitor.assert_called_once_with(sentinel.suite, ANY, formatter)
+        test_visitor.assert_called_once_with(sentinel.suite, ANY, formatter, ANY)
 
     def test_should_show_all_missing_steps(self):
         """ Scenariusz: show all missing steps """
@@ -61,8 +61,7 @@ class LabeledNodeGetLabelsTestCase(TestCase):
         """ Scenario: node labels """
         # Arrange
         expected = ['label1', 'label2']
-        obj = Feature(None, None)
-        obj.add_labels(expected)
+        obj = Feature(None, None, labels=expected)
         # Act
         result = obj.get_labels()
         # Assert
@@ -72,10 +71,8 @@ class LabeledNodeGetLabelsTestCase(TestCase):
         """ Scenario: node and parent labels """
         # Arrange
         expected = ['label1', 'label2']
-        obj = Feature(None, None)
-        obj.add_labels(['label1'])
-        parent = Feature(None, None)
-        parent.add_labels(['label2'])
+        obj = Feature(None, None, labels=['label1'])
+        parent = Feature(None, None, labels=['label2'])
         obj.parent = parent
         # Act
         result = obj.get_labels()
@@ -86,7 +83,7 @@ class LabeledNodeGetLabelsTestCase(TestCase):
 @tags(['unit'])
 class INodeEvaluateStepsTest(TestCase):
 
-    node_class = Morelia
+    node_class = Node
 
     def test_should_call_visitor(self):
         # Arrange
@@ -108,3 +105,40 @@ class INodeEvaluateStepsTest(TestCase):
         visitor.visit.assert_called_once_with(node)
         for step in steps:
             step.accept.assert_called_once_with(visitor)
+
+
+@tags(['unit'])
+class FeatureTest(TestCase):
+
+    def test_returns_default_uri(self):
+        keyword = 'Feature'
+        predicate = 'Feature with scenario'
+        feature = Feature(keyword, predicate)
+        self.assertEqual('<string>', feature.uri)
+
+    def test_returns_filename_uri(self):
+        keyword = 'Feature'
+        predicate = 'Feature with scenario'
+        feature = Feature(keyword, predicate, source=SourceLocation(sentinel.filename, sentinel.line))
+        self.assertEqual(sentinel.filename, feature.uri)
+
+    def test_returns_node_info(self):
+        keyword = 'Feature'
+        predicate = 'Feature with scenario\nDescription of a feature'
+        feature = Feature(keyword, predicate, source=SourceLocation(sentinel.filename, sentinel.line))
+        info = feature.get_info()
+        self.assertEqual(sentinel.filename, info['uri'])
+        self.assertEqual('Feature', info['keyword'])
+        self.assertEqual('feature-with-scenario', info['id'])
+        self.assertEqual('Feature with scenario', info['name'])
+        self.assertEqual(sentinel.line, info['line'])
+        self.assertEqual('Description of a feature', info['description'])
+
+    def test_returns_tags_in_info_dict(self):
+        keyword = 'Feature'
+        predicate = 'Feature with scenario'
+        tags = [Tag('tag1', 1), Tag('tag2', 1)]
+        feature = Feature(keyword, predicate, tags=tags)
+        info = feature.get_info()
+        tags = info['tags']
+        self.assertEqual(tags, info['tags'])
