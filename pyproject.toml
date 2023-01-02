@@ -35,3 +35,8 @@ tox = "^3.7"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[[tool.morelia.default.output]]
+formatter.format = "text"
+formatter.color = true
+writer.type = "terminal"

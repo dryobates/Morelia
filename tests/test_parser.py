@@ -6,10 +6,10 @@ from morelia.parser import DocStringParser, LabelParser, LanguageParser, LineSou
 
 @tags(["unit"])
 class LabelParserParseTestCase(TestCase):
-    """ Test :py:meth:`LabelParser.parse`. """
+    """Test :py:meth:`LabelParser.parse`."""
 
     def test_should_return_false_if_line_without_labels(self):
-        """ Scenario: line without labels """
+        """Scenario: line without labels"""
         # Arrange
         obj = LabelParser()
         line = ""
@@ -19,7 +19,7 @@ class LabelParserParseTestCase(TestCase):
         assert not result
 
     def test_should_return_true_if_line_with_labels(self):
-        """ Scenario: line with labels """
+        """Scenario: line with labels"""
         # Arrange
         obj = LabelParser()
         line = "@label1"
@@ -31,10 +31,10 @@ class LabelParserParseTestCase(TestCase):
 
 @tags(["unit"])
 class LabelParserPopLabelsTestCase(TestCase):
-    """ Test :py:meth:`LabelParser.pop_labels`. """
+    """Test :py:meth:`LabelParser.pop_labels`."""
 
     def test_should_not_return_labels(self):
-        """ Scenario: no labels """
+        """Scenario: no labels"""
         # Arrange
         obj = LabelParser()
         # Act
@@ -43,7 +43,7 @@ class LabelParserPopLabelsTestCase(TestCase):
         assert result == []
 
     def test_should_return_labels(self):
-        """ Scenario: pop labels """
+        """Scenario: pop labels"""
         # Arrange
         obj = LabelParser()
         obj.parse("@label1")
@@ -54,7 +54,7 @@ class LabelParserPopLabelsTestCase(TestCase):
         assert obj._labels == []
 
     def test_should_not_return_labels_when_tag_inside_step(self):
-        """ Scenario: no labels when tag inside step"""
+        """Scenario: no labels when tag inside step"""
         # Arrange
         obj = LabelParser()
         obj.parse("When abc@example.com")
@@ -67,10 +67,10 @@ class LabelParserPopLabelsTestCase(TestCase):
 
 @tags(["unit"])
 class LanguageParserParseTestCase(TestCase):
-    """ Test :py:meth:`LanguageParser.parse`. """
+    """Test :py:meth:`LanguageParser.parse`."""
 
     def test_should_return_false_if_line_without_language_directive(self):
-        """ Scenario: line without language directive """
+        """Scenario: line without language directive"""
         # Arrange
         obj = LanguageParser()
         lines = [
@@ -87,7 +87,7 @@ class LanguageParserParseTestCase(TestCase):
             assert obj.language == "en"
 
     def test_should_return_true_if_line_with_language_directive(self):
-        """ Scenario: line with language directive """
+        """Scenario: line with language directive"""
         # Arrange
         obj = LanguageParser()
         line = "# language: pl"
@@ -98,7 +98,7 @@ class LanguageParserParseTestCase(TestCase):
         assert obj.language == "pl"
 
     def test_should_set_default_language(self):
-        """ Scenario: default language passed """
+        """Scenario: default language passed"""
         # Arrange
         obj = LanguageParser(default_language="ja")
         line = ""
@@ -111,10 +111,10 @@ class LanguageParserParseTestCase(TestCase):
 
 @tags(["unit"])
 class LineProducerGetLineTestCase(TestCase):
-    """ Test :py:meth:`LineProducer.get_line`. """
+    """Test :py:meth:`LineProducer.get_line`."""
 
     def test_should_raise_stop_iteration_if_no_text(self):
-        """ Scenario: no text """
+        """Scenario: no text"""
         # Arrange
         obj = LineSource("")
         # Act
@@ -122,7 +122,7 @@ class LineProducerGetLineTestCase(TestCase):
         self.assertRaises(StopIteration, obj.get_line)
 
     def test_should_return_line_by_line(self):
-        """ Scenario: return lines """
+        """Scenario: return lines"""
         # Arrange
         lines = "line1\nline2\nline3"
         obj = LineSource(lines)
@@ -135,10 +135,10 @@ class LineProducerGetLineTestCase(TestCase):
 
 
 class DocStringParserParseTestCase(TestCase):
-    """ Test :py:meth:`DocStringParser.parse`. """
+    """Test :py:meth:`DocStringParser.parse`."""
 
     def test_should_return_false_if_not_docstring_beginning(self):
-        """ Scenario: not a docstring """
+        """Scenario: not a docstring"""
         # Arrange
         obj = DocStringParser(None)
         lines = ["", "Feature: feature", "# comment", '"']
@@ -149,7 +149,7 @@ class DocStringParserParseTestCase(TestCase):
             assert not result
 
     def test_should_return_true_if_docstring(self):
-        """ Scenario: docstring """
+        """Scenario: docstring"""
         # Arrange
         lines = '"""\nline1\nline2\n"""'
         line_source = LineSource(lines)
@@ -162,11 +162,11 @@ class DocStringParserParseTestCase(TestCase):
         assert obj.payload == "line1\nline2"
 
     def test_should_return_true_if_indented_docstring(self):
-        """ Scenario: indented docstring """
+        """Scenario: indented docstring"""
         # Arrange
         test_data = [
-            ('   """\n   line1\n   line2\n   """', "line1\nline2"),
-            ('   """\n     line1\n   line2\n   """', "  line1\nline2"),
+            ('   """\n   line1\n   line2\n   """', "   line1\n   line2"),
+            ('   """\n     line1\n   line2\n   """', "     line1\n   line2"),
         ]
         for lines, expected in test_data:
             line_source = LineSource(lines)

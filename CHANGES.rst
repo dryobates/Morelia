@@ -10,6 +10,17 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`_.
 Version: Unreleased
 ===============================================================================
 
+CHANGED
+-------
+
+  * parse matcher as default
+  * prints docstrings in output
+
+REMOVED
+-------
+
+  * dropped support for python 3.5
+
 Version: 0.9.2 (2019-07-11)
 ===============================================================================
 

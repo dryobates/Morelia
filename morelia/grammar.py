@@ -1,6 +1,7 @@
 import copy
 import itertools
 import re
+import textwrap
 from abc import ABC, abstractmethod
 from typing import Iterable, Type
 
@@ -260,7 +261,11 @@ class Step(RowParent):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.payload = ""
+        self.payload_source = ""
+
+    @property
+    def payload(self):
+        return textwrap.dedent(self.payload_source)
 
     def accept(self, visitor: Visitor) -> None:
         visitor.visit_step(self, self.steps)
@@ -328,6 +333,11 @@ class Step(RowParent):
         return copy.replace(
             "<{placeholder}>".format(placeholder=placeholder), table_value
         )
+
+    def get_payload_source(self):
+        if self.payload_source:
+            return f"{self.payload_source}\n"
+        return ""
 
 
 class Given(Step):

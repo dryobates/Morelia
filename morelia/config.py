@@ -62,7 +62,7 @@ class TOMLConfig:
     def __init__(self, section="default", filename=None):
         self.__section = section
         path = self.__get_path(filename)
-        self.__data = {"wip": False, "matchers": ["regex", "parse", "method"]}
+        self.__data = {"wip": False, "matchers": ["parse", "regex", "method"]}
         if path:
             data = toml.load(path).get("tool", {}).get("morelia", {}).get(section, {})
         else:

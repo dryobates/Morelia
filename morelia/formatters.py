@@ -298,6 +298,7 @@ class TextFormat(VisitorObserver):
                 line.strip("\n"), self.status, duration
             )
         self._output.write(text)
+        self._output.write(node.get_payload_source())
 
     def feature_started(self, node):
         self._output.write("\n")

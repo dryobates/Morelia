@@ -9,14 +9,25 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 import re
-import textwrap
 
 from morelia.breadcrumbs import Breadcrumbs
 from morelia.config import TOMLConfig
 from morelia.exceptions import InvalidScenarioMatchingPattern
 from morelia.formatters import Writer
-from morelia.grammar import (And, Background, But, Comment, Examples, Feature,
-                             Given, Row, Scenario, Step, Then, When)
+from morelia.grammar import (
+    And,
+    Background,
+    But,
+    Comment,
+    Examples,
+    Feature,
+    Given,
+    Row,
+    Scenario,
+    Step,
+    Then,
+    When,
+)
 from morelia.i18n import TRANSLATIONS
 from morelia.visitors import MissingFinder, TestVisitor
 
@@ -152,7 +163,7 @@ class Parser:
 
         if self.__docstring_parser.parse(line):
             previous = self.nodes[-1]
-            previous.payload = self.__docstring_parser.payload
+            previous.payload_source = self.__docstring_parser.payload
             return
 
         if self.__parse_node(line):
@@ -281,7 +292,7 @@ class DocStringParser:
 
     @property
     def payload(self):
-        return textwrap.dedent("\n".join(self.__payload))
+        return "\n".join(self.__payload)
 
 
 class LineSource:
