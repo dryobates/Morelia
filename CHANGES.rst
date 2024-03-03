@@ -10,6 +10,11 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`_.
 Version: Unreleased
 ===============================================================================
 
+ADDED
+-----
+
+  * labels in setUpFeature, setUpScenario and setUpStep hooks
+
 CHANGED
 -------
 
