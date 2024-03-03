@@ -67,7 +67,7 @@ Ready to contribute? Here's how to set up `morelia` for local development.
 3. Assuming you have poetry installed (https://poetry.eustace.io/), this is how you set up your fork for local development with poetry::
 
     $ cd morelia/
-    $ make develop      # creates virtualenv and installs dependencies with poetry
+    $ poetry install
 
 4. Create a branch for local development::
 
@@ -75,10 +75,9 @@ Ready to contribute? Here's how to set up `morelia` for local development.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass static analysis and the tests, including testing other Python versions with tox::
+5. When you're done making changes, check that your changes pass static analysis and the tests::
 
-    $ make test         # runs tests for development environment
-    $ make test-all     # runs tests for every supported environment with tox
+    $ pytest         # runs tests for development environment
 
 6. Commit your changes and push your branch to GitHub::
 
@@ -87,16 +86,3 @@ Ready to contribute? Here's how to set up `morelia` for local development.
     $ git push origin name-of-your-bugfix-or-feature
 
 7. Submit a pull request through the GitHub website.
-
-Pull Request Guidelines
------------------------
-
-Before you submit a pull request, check that it meets these guidelines:
-
-1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put
-   your new functionality into a function with a docstring, and add the
-   feature to the list in README.rst.
-3. The pull request should work for Python 3.5+ and for PyPy3. Check
-   https://travis-ci.org/kidosoft/morelia/pull_requests
-   and make sure that the tests pass for all supported Python versions.

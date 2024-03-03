@@ -18,14 +18,6 @@ Morelia
     :target: https://pypi.python.org/pypi/Morelia/
     :alt: License
 
-.. image:: https://travis-ci.org/kidosoft/Morelia.svg?branch=master
-    :target: https://travis-ci.org/kidosoft/Morelia
-    :alt: Build status
-
-.. image:: https://coveralls.io/repos/kidosoft/Morelia/badge.svg
-    :target: https://coveralls.io/r/kidosoft/Morelia
-    :alt: Coverage
-
 .. image:: https://readthedocs.org/projects/morelia/badge/?format=svg
     :target: https://morelia.readthedocs.io
     :alt: Documentation
@@ -99,7 +91,7 @@ Create standard Python's `unittest` and hook Morelia into it:
 
 
     class CalculatorTestCase(unittest.TestCase):
-    
+
         def test_addition(self):
             """ Addition feature """
             verify('calculator.feature', self)
@@ -171,14 +163,14 @@ Now implement steps with standard `TestCases` that you are familiar:
     import unittest
 
     from morelia import verify
-    
+
 
     class CalculatorTestCase(unittest.TestCase):
-    
+
         def test_addition(self):
             """ Addition feature """
             verify('calculator.feature', self)
-    
+
         def step_I_have_powered_calculator_on(self):
             r'I have powered calculator on'
             self.stack = []
@@ -186,10 +178,10 @@ Now implement steps with standard `TestCases` that you are familiar:
         def step_I_enter_a_number_into_the_calculator(self, number):
             r'I enter "(\d+)" into the calculator'  # match by regexp
             self.stack.append(int(number))
-    
+
         def step_I_press_add(self):  # matched by method name
             self.result = sum(self.stack)
-    
+
         def step_the_result_should_be_on_the_screen(self, number):
             r'the result should be "{number}" on the screen'  # match by format-like string
             self.assertEqual(int(number), self.result)
@@ -229,10 +221,6 @@ Documentation
 =============
 
 Full documentation is available at http://morelia.readthedocs.org/en/latest/index.html
-
-.. image:: http://zeroplayer.com/images/stuff/sneakySnake.jpg
-.. _the cheeseshop: http://pypi.python.org/pypi/Morelia/
-.. _GitHub: http://github.com/kidosoft/Morelia/
 
 Credits
 ---------

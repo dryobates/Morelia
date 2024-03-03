@@ -19,7 +19,7 @@ CHANGED
 REMOVED
 -------
 
-  * dropped support for python 3.5
+  * dropped support for python 3.5, 3.6, 3.7
 
 Version: 0.9.2 (2019-07-11)
 ===============================================================================

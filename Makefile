@@ -29,10 +29,7 @@ develop:  ## create virtualenv and install dependencies
 test: ## run tests quickly with the default Python
 	poetry run pytest
 
-test-all: clean tox docs ## test every Python version with tox
-
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
-	rm -fr .tox/
 
 clean-build: ## remove build artifacts
 	rm -fr build/
@@ -51,9 +48,6 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -f coverage.xml
 	rm -fr htmlcov/
-
-tox:
-	poetry run tox --skip-missing-interpreters
 
 docs: ## generate Sphinx HTML documentation
 	poetry run $(MAKE) -C docs clean

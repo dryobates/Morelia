@@ -22,10 +22,10 @@ class TestingStepMatcher(IStepMatcher):
 
 @tags(["unit"])
 class IStepMatcherAddMatcherTestCase(unittest.TestCase):
-    """ Test :py:meth:`IStepMatcher.add_matcher`. """
+    """Test :py:meth:`IStepMatcher.add_matcher`."""
 
     def test_should_add_matcher(self):
-        """ Scenario: add matcher """
+        """Scenario: add matcher"""
         # Arrange
         suite = Mock()
         matcher1 = TestingStepMatcher(suite)
@@ -36,7 +36,7 @@ class IStepMatcherAddMatcherTestCase(unittest.TestCase):
         assert matcher1._next == matcher2
 
     def test_should_delegate_adding_matcher(self):
-        """ Scenario: delegating add """
+        """Scenario: delegating add"""
         # Arrange
         suite = Mock()
         matcher1 = TestingStepMatcher(suite)
@@ -50,7 +50,7 @@ class IStepMatcherAddMatcherTestCase(unittest.TestCase):
         assert matcher2._next == matcher3
 
     def test_should_chain_adding_matchers(self):
-        """ Scenario: chaining """
+        """Scenario: chaining"""
         # Arrange
         suite = Mock()
         matcher1 = TestingStepMatcher(suite)
@@ -65,10 +65,10 @@ class IStepMatcherAddMatcherTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class IStepMatcherFindTestCase(unittest.TestCase):
-    """ Test :py:meth:`IStepMatcher.find`. """
+    """Test :py:meth:`IStepMatcher.find`."""
 
     def test_should_find_method_when_step_methods_given(self):
-        """ Scenario: find method when step methods given"""
+        """Scenario: find method when step methods given"""
         # Arrange
         suite = Mock()
         obj = TestingStepMatcher(suite)
@@ -86,7 +86,7 @@ class IStepMatcherFindTestCase(unittest.TestCase):
         assert method == sentinel.method
 
     def test_should_find_method_when_no_step_methods_given(self):
-        """ Scenario: no step methods """
+        """Scenario: no step methods"""
         # Arrange
         suite = Mock()
         obj = TestingStepMatcher(suite)
@@ -105,7 +105,7 @@ class IStepMatcherFindTestCase(unittest.TestCase):
         assert method == sentinel.method
 
     def test_should_not_find_method(self):
-        """ Scenario: not found """
+        """Scenario: not found"""
         # Arrange
         suite = Mock()
         obj = TestingStepMatcher(suite)
@@ -123,7 +123,7 @@ class IStepMatcherFindTestCase(unittest.TestCase):
         assert method is None
 
     def test_should_delegate_search(self):
-        """ Scenario: delegate """
+        """Scenario: delegate"""
         # Arrange
         suite = Mock()
         matcher1 = TestingStepMatcher(suite)
@@ -152,10 +152,10 @@ class IStepMatcherFindTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class IStepMatcherGetAllStepMethodsTestCase(unittest.TestCase):
-    """ Test :py:meth:`IStepMatcher._get_all_step_methods`. """
+    """Test :py:meth:`IStepMatcher._get_all_step_methods`."""
 
     def test_should_return_steps_list(self):
-        """ Scenario: filtered step lists """
+        """Scenario: filtered step lists"""
         # Arrange
         step_methods = ["step_method1", "step_method2"]
         all_methods = step_methods + ["method3"]
@@ -170,10 +170,10 @@ class IStepMatcherGetAllStepMethodsTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class MethodNameStepMatcherMatchTestCase(unittest.TestCase):
-    """ Test :py:meth:`MethodNameStepMatcher.match`. """
+    """Test :py:meth:`MethodNameStepMatcher.match`."""
 
     def test_should_return_method(self):
-        """ Scenario: match by name """
+        """Scenario: match by name"""
         # Arrange
         predicate = "my_milkshake"
         augmented_predicate = "my_milkshake"
@@ -189,7 +189,7 @@ class MethodNameStepMatcherMatchTestCase(unittest.TestCase):
         assert result_method == sentinel.method
 
     def test_should_return_none_if_method_not_found(self):
-        """ Scenario: no method """
+        """Scenario: no method"""
         # Arrange
         predicate = "not there"
         augmented_predicate = "my_milkshake"
@@ -205,7 +205,7 @@ class MethodNameStepMatcherMatchTestCase(unittest.TestCase):
         assert result_method is None
 
     def test_should_return_none_if_method_name_too_short(self):
-        """ Scenario: method too short """
+        """Scenario: method too short"""
         # Arrange
         predicate = "my milk"
         augmented_predicate = "my_milkshake"
@@ -223,10 +223,10 @@ class MethodNameStepMatcherMatchTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
-    """ Test :py:meth:`MethodNameStepMatcher.suggest`. """
+    """Test :py:meth:`MethodNameStepMatcher.suggest`."""
 
     def test_should_return_suggested_method(self):
-        """ Scenariusz: suggest """
+        """Scenariusz: suggest"""
         # Arrange
         obj = MethodNameStepMatcher(sentinel.suite)
         pattern = "    def step_%(method_name)s(self%(args)s):\n\n        raise NotImplementedError('%(predicate)s')\n\n"
@@ -259,10 +259,10 @@ class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class DocStringStepMatcherMatchTestCase(unittest.TestCase):
-    """ Test :py:meth:`DocStringStepMatcher.match`. """
+    """Test :py:meth:`DocStringStepMatcher.match`."""
 
     def test_should_return_method_and_args(self):
-        """ Scenario: match by docstring """
+        """Scenario: match by docstring"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -281,7 +281,7 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         assert result_args == ("boys", "the")
 
     def test_should_return_method_and_kwargs(self):
-        """ Scenario: match by docstring with named groups """
+        """Scenario: match by docstring with named groups"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -302,7 +302,7 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         assert result_kwargs == {"who": "boys", "other": "the"}
 
     def test_should_return_method_and_kwargs_with_mixed_groups(self):
-        """ Scenario: match by docstring with named and not named groups """
+        """Scenario: match by docstring with named and not named groups"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -322,7 +322,7 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         assert result_kwargs == {"who": "boys"}
 
     def test_should_return_none_if_docstring_not_mached(self):
-        """ Scenario: no match by docstring """
+        """Scenario: no match by docstring"""
         # Arrange
         predicate = "not there"
         augmented_predicate = "not there"
@@ -341,7 +341,7 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         assert result_args == ()
 
     def test_should_return_none_if_no_docstring(self):
-        """ Scenario: no match by docstring """
+        """Scenario: no match by docstring"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -359,7 +359,7 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         assert result_args == ()
 
     def test_should_return_second_method_and_matches(self):
-        """ Scenario: many methods """
+        """Scenario: many methods"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -378,7 +378,7 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         assert result_args == ("boys", "the")
 
     def test_should_match_with_utf8_string(self):
-        """ Scenario: match with utf8 string """
+        """Scenario: match with utf8 string"""
         # Arrange
         predicate = "zażółć gęślą jaźń"
         augmented_predicate = "zażółć gęślą jaźń"
@@ -398,10 +398,10 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
-    """ Test :py:meth:`DocStringStepMatcher.suggest`. """
+    """Test :py:meth:`DocStringStepMatcher.suggest`."""
 
     def test_should_return_suggested_method(self):
-        """ Scenariusz: suggest """
+        """Scenariusz: suggest"""
         # Arrange
         obj = RegexpStepMatcher(sentinel.suite)
         # Act
@@ -451,10 +451,10 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class ParseStepMatcherMatchTestCase(unittest.TestCase):
-    """ Test :py:meth:`ParseStepMatcher.match`. """
+    """Test :py:meth:`ParseStepMatcher.match`."""
 
     def test_should_return_method_and_args(self):
-        """ Scenario: match by docstring """
+        """Scenario: match by docstring"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -473,7 +473,7 @@ class ParseStepMatcherMatchTestCase(unittest.TestCase):
         assert result_args == ("boys", "the")
 
     def test_should_return_method_and_kwargs(self):
-        """ Scenario: match by docstring with named groups """
+        """Scenario: match by docstring with named groups"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -492,7 +492,7 @@ class ParseStepMatcherMatchTestCase(unittest.TestCase):
         assert result_kwargs == {"who": "boys", "other": "the"}
 
     def test_should_return_method_args_and_kwargs_with_mixed_groups(self):
-        """ Scenario: match by docstring with named and not named groups """
+        """Scenario: match by docstring with named and not named groups"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -512,7 +512,7 @@ class ParseStepMatcherMatchTestCase(unittest.TestCase):
         assert result_kwargs == {"who": "boys"}
 
     def test_should_return_none_if_docstring_not_mached(self):
-        """ Scenario: no match by docstring """
+        """Scenario: no match by docstring"""
         # Arrange
         predicate = "not there"
         augmented_predicate = "not there"
@@ -531,7 +531,7 @@ class ParseStepMatcherMatchTestCase(unittest.TestCase):
         assert result_args == ()
 
     def test_should_return_none_if_no_docstring(self):
-        """ Scenario: no match by docstring """
+        """Scenario: no match by docstring"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -549,7 +549,7 @@ class ParseStepMatcherMatchTestCase(unittest.TestCase):
         assert result_args == ()
 
     def test_should_return_second_method_and_matches(self):
-        """ Scenario: many methods """
+        """Scenario: many methods"""
         # Arrange
         predicate = "my milkshake brings all the boys to the yard"
         augmented_predicate = "my milkshake brings all the boys to the yard"
@@ -571,10 +571,10 @@ class ParseStepMatcherMatchTestCase(unittest.TestCase):
 
 @tags(["unit"])
 class ParseStepMatcherSuggestTestCase(unittest.TestCase):
-    """ Test :py:meth:`ParseStepMatcher.suggest`. """
+    """Test :py:meth:`ParseStepMatcher.suggest`."""
 
     def test_should_return_suggested_method(self):
-        """ Scenario: suggest """
+        """Scenario: suggest"""
         # Arrange
         obj = ParseStepMatcher(sentinel.suite)
         # Act

@@ -77,7 +77,10 @@ class RowTest(TestCase):
 
     def test_Rows_find_step_parents(self):
         self.assemble_scene_table()
-        given, then, = self.table_scene.steps[0].steps
+        (
+            given,
+            then,
+        ) = self.table_scene.steps[0].steps
         assert isinstance(given.steps[0], Row)
         assert isinstance(then.steps[0], Row)
         assert "zone  |" == given.steps[0].predicate
