@@ -131,7 +131,7 @@ class MoreliaSuite(TestCase):
         feature = Parser().parse_features(File(features_dir / "morelia.feature"))
         execute_script(feature, self)
 
-    def setUpScenario(self):
+    def setUpScenario(self, labels):
         self.culture = []
 
     def step_adventure_of_love_love_and_culture_(self, culture):

@@ -42,19 +42,19 @@ class SetUpTearDownTest(TestCase):
         ]
         assert expected_sequence == self.executed
 
-    def setUpFeature(self):
+    def setUpFeature(self, labels):
         self.executed.append("setUpFeature")
 
     def tearDownFeature(self):
         self.executed.append("tearDownFeature")
 
-    def setUpScenario(self):
+    def setUpScenario(self, labels):
         self.executed.append("setUpScenario")
 
     def tearDownScenario(self):
         self.executed.append("tearDownScenario")
 
-    def setUpStep(self):
+    def setUpStep(self, labels):
         self.executed.append("setUpStep")
 
     def tearDownStep(self):
