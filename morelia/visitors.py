@@ -103,12 +103,12 @@ class TestVisitor(ObservableVisitor, Visitor):
         self.setUpStep = getattr(suite, "setUpStep", self.noop)
         self.tearDownStep = getattr(suite, "tearDownStep", self.noop)
 
-    def noop(self):
+    def noop(self, **kwargs):
         pass
 
     def visit_feature(self, node: Feature, children: Iterable[Node] = []) -> None:
         self.feature_started(node)
-        self.setUpFeature()
+        self.setUpFeature(labels=node.get_labels())
         try:
             self.visit_children(children)
         finally:
@@ -119,7 +119,7 @@ class TestVisitor(ObservableVisitor, Visitor):
         if not self.__scenario_re.match(node.predicate):
             return
         self.scenario_started(node)
-        self.setUpScenario()
+        self.setUpScenario(labels=node.get_labels())
         try:
             self.visit_children(children)
         finally:
@@ -128,7 +128,7 @@ class TestVisitor(ObservableVisitor, Visitor):
 
     def visit_step(self, node: Step, children: Iterable[Node] = []) -> None:
         self.step_started(node)
-        self.setUpStep()
+        self.setUpStep(labels=node.get_labels())
         try:
             self.__execute_step(node)
             self.visit_children(children)
