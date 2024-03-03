@@ -30,7 +30,7 @@ class BackgroundTest(TestCase):
         self.__scenarios_count += 1
 
     def step_all_background_steps_are_executed_before_any_step_defined_in_scenario(
-        self
+        self,
     ):
         background_step = "I have some background steps defined"
         scenario_step = "scenario is executed"

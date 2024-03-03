@@ -9,7 +9,7 @@ from morelia.visitors import TestVisitor
 
 @tags(["unit"])
 class TestVisitorVisitTestCase(unittest.TestCase):
-    """ Test :py:meth:`TestVisitor.visit`. """
+    """Test :py:meth:`TestVisitor.visit`."""
 
     def test_should_catch_SystemExit(self):
         node = Mock(Step)

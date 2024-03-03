@@ -11,10 +11,10 @@ from morelia.grammar import Step
 
 @tags(["unit"])
 class MissingStepErrorTestCase(TestCase):
-    """ Test :py:meth:`MissingStepError`. """
+    """Test :py:meth:`MissingStepError`."""
 
     def test_should_create_exception(self):
-        """ Scenario: exception with step and suggest """
+        """Scenario: exception with step and suggest"""
         # Arrange
         # Act
         result = MissingStepError(
@@ -31,7 +31,7 @@ class MissingStepErrorTestCase(TestCase):
 @tags(["unit"])
 class StepFindStepTestCase(TestCase):
     def test_should_find_method(self):
-        """ Scenario: method found """
+        """Scenario: method found"""
         # Arrange
         obj = Step("???", "method")
         # Act
@@ -42,7 +42,7 @@ class StepFindStepTestCase(TestCase):
         assert result == sentinel.method
 
     def test_should_not_find_method(self):
-        """ Scenario: not found """
+        """Scenario: not found"""
         # Arrange
         obj = Step("???", "some_method")
         matcher = Mock()

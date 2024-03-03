@@ -46,7 +46,7 @@ class StepTest(TestCase):
         assert step.predicate == "a string with spacies and\nanother string"
 
     def test_deal_with_pesky_carriage_returns(
-        self
+        self,
     ):  # because Morse Code will live forever!
         source = "Given a string with spacies and   \r\n  another string  "
         steps = Parser().parse_feature(source)
@@ -64,7 +64,7 @@ class StepTest(TestCase):
         assert step.predicate == "a string \\\n And another string"
 
     def test_given_a_string_with_a_line_breaker_followed_by_a_keyword_with_stray_spacies(
-        self
+        self,
     ):
         source = "Given a string \\  \n And another string, without stray spacies"
         steps = Parser().parse_feature(source)
